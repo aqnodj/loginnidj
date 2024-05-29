@@ -2,8 +2,15 @@
 require_once('classes/database.php');
 $con=new database();
 session_start();
-if (isset($_SESSION['Username'])){
-  header('location:index.php');
+
+// If the user is already logged in, check their account type and redirect accordingly
+if (isset($_SESSION['Username']) && isset($_SESSION['account_type'])) {
+  if ($_SESSION['account_type'] == 0) {
+    header('location:index.php');
+  } else if ($_SESSION['account_type'] == 1) {
+    header('location:user_account.php');
+  }
+  exit();
 }
 
 if (isset($_POST['login'])) {
@@ -11,19 +18,23 @@ if (isset($_POST['login'])) {
   $password = $_POST['Pass_word'];
   $result = $con->check($username, $password);
 
-  if ($result) {
-      $_SESSION['username'] = $result['Username'];
-      header('location:index.php');
-  } else {
-      $error = "Incorrect username or password. Please try again.";
+if($result){
+
+  $_SESSION['Username'] = $result['Username'];
+  $_SESSION['UserID'] = $result['UserID'];
+  $_SESSION['account_type'] = $result['account_type'];
+
+  if($result['account_type']==0){
+    header('location:index.php');
+  } else if ($result['account_type']==1){
+    header('location:user_account.php');
+  }
+  } else{
+    $error = "Incorrect username or password, try again brobro";
   }
 }
-
 ?>
- <?php
-
- ?>
-
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +44,7 @@ if (isset($_POST['login'])) {
   <link rel="stylesheet" href="./bootstrap-5.3.3-dist/css/bootstrap.css">
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="login.css" rel="stylesheet">
   <style>
     .login-container {
       max-width: 400px;
@@ -59,7 +71,7 @@ if (isset($_POST['login'])) {
       <input type="password" class="form-control" name="Pass_word" placeholder="Enter password">
     </div>
     <div class="container"><div class="row gx 1"><div class="col"><input type="submit" name="login" class="btn btn-warning btn-block" value="Login"></input></div>
-    <div class="col"><a class="btn btn-danger btn-block" href=signup.php>Sign Up</a></div></div></div>
+    <div class="col"><a class="btn btn-danger btn-block" href=Register.php>Register</a></div></div></div>
   
   </form>
 </div>

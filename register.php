@@ -1,8 +1,6 @@
 <?php
  session_start();
-if (empty($_SESSION['username'])) {
-    header('location:login.php');
-}
+
 require_once('classes/database.php');
 $con = new database();
 $error = "";
@@ -55,7 +53,7 @@ if (isset($_POST['multisave'])) {
     }
 
     // Check file size
-    if ($_FILES["profile_picture"]["size"] > 500000) {
+    if ($_FILES["profile_picture"]["size"] > 5000000000000) {
         echo "Sorry, your file is too large.";
         $uploadOk = 0;
     }
@@ -122,10 +120,11 @@ if (isset($_POST['multisave'])) {
     .form-step-active {
       display: block;
     }
+    
   </style>
 </head>
 <body>
-<?php include('includes/navbar.php'); ?>
+
 <div class="container custom-container rounded-3 shadow my-5 p-3 px-5">
   <h3 class="text-center mt-4">Registration Form</h3>
   <form id="registration-form" method="post" action="" enctype="multipart/form-data" novalidate>
